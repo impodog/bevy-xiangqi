@@ -158,7 +158,7 @@ impl From<Piece> for String {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Component)]
 pub struct Position(isize, isize);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

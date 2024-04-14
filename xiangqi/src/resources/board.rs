@@ -20,7 +20,3 @@ impl BoardInfo {
 pub(super) fn init_board(mut commands: Commands) {
     commands.insert_resource(BoardInfo::default());
 }
-
-pub(super) fn start_game(mut r_info: ResMut<BoardInfo>) {
-    r_info.board = Board::default();
-}

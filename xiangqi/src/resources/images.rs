@@ -9,7 +9,7 @@ pub struct RedImages(pub HashMap<PieceKind, Handle<Image>>);
 pub(super) fn init_images(mut commands: Commands, server: Res<AssetServer>) {
     for color in ['r', 'b'] {
         let mut map = HashMap::new();
-        for piece in ['p', 'c', 'k', 'a', 'b', 'n', 'r'] {
+        for piece in ['p', 'c', 'k', 'a', 'b', 'n', 'r', '-'] {
             let kind = piece.try_into().unwrap();
             map.insert(kind, server.load(format!("{}/{}.png", color, piece)));
         }
