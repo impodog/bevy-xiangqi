@@ -120,6 +120,10 @@ impl Piece {
         !self.is_empty() && self.color == color
     }
 
+    pub fn kind(self) -> PieceKind {
+        self.kind
+    }
+
     pub fn color(self) -> Option<PieceColor> {
         if self.is_empty() {
             None
@@ -157,9 +161,48 @@ impl From<Piece> for String {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Position(isize, isize);
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum MoveDir {
+    Left,
+    Right,
+    Up,
+    Down,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum DiagDir {
+    LU,
+    LD,
+    RU,
+    RD,
+}
+
+impl MoveDir {
+    pub fn corresponding(self) -> [DiagDir; 2] {
+        match self {
+            MoveDir::Left => [DiagDir::LU, DiagDir::LD],
+            MoveDir::Right => [DiagDir::RU, DiagDir::RD],
+            MoveDir::Up => [DiagDir::LU, DiagDir::RU],
+            MoveDir::Down => [DiagDir::LD, DiagDir::RD],
+        }
+    }
+}
+
 impl Position {
     pub const fn new(rank: usize, file: usize) -> Self {
         Self(rank as isize, file as isize)
+    }
+
+    pub const fn new_int(rank: isize, file: isize) -> Self {
+        Self(rank, file)
+    }
+
+    pub fn legal(self) -> Option<Self> {
+        if 0 <= self.0 && self.0 < RANKS as isize && 0 <= self.1 && self.1 < FILES as isize {
+            Some(self)
+        } else {
+            None
+        }
     }
 
     pub const fn rank(self) -> usize {
@@ -168,6 +211,36 @@ impl Position {
 
     pub const fn file(self) -> usize {
         self.1 as usize
+    }
+
+    pub const fn rank_int(self) -> isize {
+        self.0
+    }
+
+    pub const fn file_int(self) -> isize {
+        self.1
+    }
+}
+
+impl From<MoveDir> for Position {
+    fn from(value: MoveDir) -> Self {
+        match value {
+            MoveDir::Left => Position::new_int(0, -1),
+            MoveDir::Right => Position::new_int(0, 1),
+            MoveDir::Up => Position::new_int(-1, 0),
+            MoveDir::Down => Position::new_int(1, 0),
+        }
+    }
+}
+
+impl From<DiagDir> for Position {
+    fn from(value: DiagDir) -> Self {
+        match value {
+            DiagDir::LU => Position::new_int(-1, -1),
+            DiagDir::LD => Position::new_int(1, -1),
+            DiagDir::RU => Position::new_int(-1, 1),
+            DiagDir::RD => Position::new_int(1, 1),
+        }
     }
 }
 
@@ -182,6 +255,13 @@ impl std::ops::Sub<Position> for Position {
     type Output = Position;
     fn sub(self, other: Position) -> Position {
         Position(self.0 - other.0, self.1 - other.1)
+    }
+}
+
+impl std::ops::Mul<isize> for Position {
+    type Output = Position;
+    fn mul(self, other: isize) -> Position {
+        Position(self.0 * other, self.1 * other)
     }
 }
 
