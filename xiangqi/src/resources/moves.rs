@@ -65,24 +65,33 @@ pub(super) fn verify_move(
 ) {
     try_move.read().for_each(|mv| {
         info!("Move request: {:?}", mv);
-        if connect.is_connected()
-            && board.board.turn() == connect.player.as_ref().unwrap().color
-            && mv.from.legal().is_some()
-            && mv.to.legal().is_some()
-            && moves
-                .moves
-                .get(&mv.from)
-                .map(|set| set.contains(&mv.to))
-                .unwrap_or_default()
-        {
-            do_move.send(DoMoveEvent {
-                from: mv.from,
-                to: mv.to,
-            });
-            info!("Request sent");
-        } else {
-            info!("Request denied");
+        if !connect.is_connected() {
+            warn!("Connection is not available any more");
+            return;
         }
+        if board.board.turn() != connect.player.as_ref().unwrap().color {
+            warn!("It's not your turn");
+            return;
+        }
+        if mv.from.legal().is_none() || mv.to.legal().is_none() {
+            warn!("You clicked on somewhere outside the board");
+            return;
+        }
+        if !moves
+            .moves
+            .get(&mv.from)
+            .map(|set| set.contains(&mv.to))
+            .unwrap_or_default()
+        {
+            warn!("This move is illegal according to the rules");
+            return;
+        }
+
+        do_move.send(DoMoveEvent {
+            from: mv.from,
+            to: mv.to,
+        });
+        info!("Move request successfully sent");
     });
 }
 
@@ -90,12 +99,25 @@ pub(super) fn do_move(
     mut do_move: EventReader<DoMoveEvent>,
     mut update: EventWriter<UpdateEvent>,
     mut board: ResMut<BoardInfo>,
-    _connect: Res<Connection>,
+    mut request: EventWriter<HttpRequest>,
+    connect: Res<Connection>,
 ) {
     do_move.read().for_each(|mv| {
         board.board.force(mv.from, mv.to);
         board.board.next_turn();
-        // todo Do something with the connection
         update.send(UpdateEvent);
+
+        info!("Sending play request");
+        let body = PlayRequest {
+            room: connect.room,
+            player: connect.player.as_ref().unwrap().color.into(),
+            board: (&board.board).into(),
+        };
+        request.send(
+            HttpClient::new()
+                .json(&body)
+                .post(format!("{}/play", connect.url))
+                .build(),
+        );
     });
 }

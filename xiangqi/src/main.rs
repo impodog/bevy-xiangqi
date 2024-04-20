@@ -1,6 +1,9 @@
 use ::xiangqi::prelude::*;
 use bevy::prelude::*;
 
+#[cfg(not(debug_assertions))]
+fn debug_connect() {}
+
 fn main() {
     App::new()
         .add_plugins(
@@ -14,6 +17,7 @@ fn main() {
                 ..Default::default()
             }),
         )
-        .add_plugins((ComponentsPlugin, ResourcesPlugin, StatusPlugin))
+        .add_plugins((bevy_http_client::HttpClientPlugin, bevy_egui::EguiPlugin))
+        .add_plugins((ComponentsPlugin, ResourcesPlugin, StatusPlugin, MenuPlugin))
         .run();
 }

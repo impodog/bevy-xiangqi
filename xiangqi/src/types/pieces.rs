@@ -81,6 +81,25 @@ impl From<PieceColor> for char {
     }
 }
 
+impl From<bool> for PieceColor {
+    fn from(value: bool) -> Self {
+        if value {
+            PieceColor::Red
+        } else {
+            PieceColor::Black
+        }
+    }
+}
+
+impl From<PieceColor> for bool {
+    fn from(value: PieceColor) -> Self {
+        match value {
+            PieceColor::Red => true,
+            PieceColor::Black => false,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct Piece {
     kind: PieceKind,
@@ -227,8 +246,8 @@ impl From<MoveDir> for Position {
         match value {
             MoveDir::Left => Position::new_int(0, -1),
             MoveDir::Right => Position::new_int(0, 1),
-            MoveDir::Up => Position::new_int(-1, 0),
-            MoveDir::Down => Position::new_int(1, 0),
+            MoveDir::Up => Position::new_int(1, 0),
+            MoveDir::Down => Position::new_int(-1, 0),
         }
     }
 }
@@ -236,10 +255,10 @@ impl From<MoveDir> for Position {
 impl From<DiagDir> for Position {
     fn from(value: DiagDir) -> Self {
         match value {
-            DiagDir::LU => Position::new_int(-1, -1),
-            DiagDir::LD => Position::new_int(1, -1),
-            DiagDir::RU => Position::new_int(-1, 1),
-            DiagDir::RD => Position::new_int(1, 1),
+            DiagDir::LU => Position::new_int(1, -1),
+            DiagDir::LD => Position::new_int(-1, -1),
+            DiagDir::RU => Position::new_int(1, 1),
+            DiagDir::RD => Position::new_int(-1, 1),
         }
     }
 }

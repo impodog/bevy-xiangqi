@@ -6,6 +6,12 @@ pub struct BlackImages(pub HashMap<PieceKind, Handle<Image>>);
 #[derive(Resource)]
 pub struct RedImages(pub HashMap<PieceKind, Handle<Image>>);
 
+#[derive(Resource)]
+pub struct MarkerImage(pub Handle<Image>);
+
+#[derive(Resource)]
+pub struct TileImage(pub Handle<Image>);
+
 pub(super) fn init_images(mut commands: Commands, server: Res<AssetServer>) {
     for color in ['r', 'b'] {
         let mut map = HashMap::new();
@@ -23,4 +29,6 @@ pub(super) fn init_images(mut commands: Commands, server: Res<AssetServer>) {
             _ => unreachable!(),
         }
     }
+    commands.insert_resource(MarkerImage(server.load("marker.png")));
+    commands.insert_resource(TileImage(server.load("tile.png")));
 }

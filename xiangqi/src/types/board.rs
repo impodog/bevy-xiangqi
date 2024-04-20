@@ -111,7 +111,7 @@ impl Board {
             PieceColor::Black => MoveDir::Down,
         };
         // If the pawn crosses the river
-        if (from.rank_int() > 4) ^ (dir == MoveDir::Up) {
+        if (from.rank_int() > 4) ^ (dir == MoveDir::Down) {
             if let Some(to) = self.test_move(from, from + MoveDir::Left.into()) {
                 result.insert(to);
             }
@@ -172,7 +172,7 @@ impl Board {
             if let Some(to) = self.test_move(from, from + dir.into()) {
                 if 4 <= to.file()
                     && to.file() <= 6
-                    && ((to.rank() <= max_rank) ^ piece.is_color(PieceColor::Red))
+                    && ((to.rank() <= max_rank) ^ piece.is_color(PieceColor::Black))
                 {
                     result.insert(to);
                 }
@@ -205,9 +205,9 @@ impl Board {
         };
         for dir in DIAG_DIRS {
             if let Some(to) = self.test_move(from, from + dir.into()) {
-                if 3 <= to.rank()
-                    && to.rank() <= 5
-                    && ((to.file() <= max_rank) ^ (piece.is_color(PieceColor::Red)))
+                if 3 <= to.file()
+                    && to.file() <= 5
+                    && ((to.rank() <= max_rank) ^ (piece.is_color(PieceColor::Black)))
                 {
                     result.insert(to);
                 }
@@ -222,7 +222,9 @@ impl Board {
             if let Some(mid) = (from + dir.into()).legal() {
                 if self.get(mid).is_empty() {
                     if let Some(to) = self.test_move(from, from + Into::<Position>::into(dir) * 2) {
-                        result.insert(to);
+                        if (to.rank() <= 4) ^ (piece.is_color(PieceColor::Black)) {
+                            result.insert(to);
+                        }
                     }
                 }
             }

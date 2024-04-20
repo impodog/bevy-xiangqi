@@ -7,6 +7,6 @@ pub struct StatusPlugin;
 
 impl Plugin for StatusPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_state(Status::Play);
+        app.init_state::<Status>();
     }
 }

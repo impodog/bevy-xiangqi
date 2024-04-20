@@ -1,12 +1,16 @@
 [package]
 name = "xiangqi"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 bevy = "0.13.2"
+bevy_egui = "0.27.0"
+bevy_http_client = { version = "0.5.1", git = "https://github.com/impodog/bevy_http_client" }
 lazy_static = "1.4.0"
 num_enum = "0.7.2"
+serde = "1.0.198"
 threadpool = "1.8.1"
+transfer = { path = "../transfer" }

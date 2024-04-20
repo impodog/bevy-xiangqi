@@ -5,3 +5,9 @@ pub enum Status {
     Menu,
     Play,
 }
+
+impl Default for Status {
+    fn default() -> Self {
+        Self::Menu
+    }
+}
