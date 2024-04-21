@@ -22,15 +22,21 @@ pub(super) fn init_contents(mut commands: Commands) {
     commands.init_resource::<MenuContents>();
 }
 
+pub(super) fn init_ui(mut contexts: Query<&mut bevy_egui::EguiContext>) {
+    contexts
+        .iter_mut()
+        .for_each(|mut context| context.get_mut().set_pixels_per_point(5.0));
+}
+
 pub(super) fn menu_ui(
     mut contexts: EguiContexts,
     mut contents: ResMut<MenuContents>,
     mut launch: EventWriter<LaunchEvent>,
 ) {
-    egui::Window::new("Configurations").show(contexts.ctx_mut(), |ui| {
-        ui.label(egui::RichText::new("Connection URL:").size(30.0));
+    egui::CentralPanel::default().show(contexts.ctx_mut(), |ui| {
+        ui.label("Connection URL:");
         ui.text_edit_singleline(&mut contents.url);
-        ui.label(egui::RichText::new("Room Code:").size(30.0));
+        ui.label("Room Code:");
         ui.text_edit_singleline(&mut contents.room);
         if ui.button("Connect").clicked() {
             launch.send(LaunchEvent);

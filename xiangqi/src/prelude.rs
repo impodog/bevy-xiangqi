@@ -12,8 +12,8 @@ pub(crate) use std::collections::{HashMap, HashSet};
 pub(crate) use std::sync::{Arc, RwLock};
 pub(crate) use transfer::*;
 
-pub static WIDTH: f32 = 1980.0;
-pub static HEIGHT: f32 = 1080.0;
+pub static WIDTH: f32 = 1600.0;
+pub static HEIGHT: f32 = 900.0;
 pub static FILES: usize = 9;
 pub static RANKS: usize = 10;
 pub static MOVE_DIRS: [MoveDir; 4] = [MoveDir::Left, MoveDir::Right, MoveDir::Up, MoveDir::Down];
